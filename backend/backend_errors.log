@@ -1,0 +1,30 @@
+2026-02-05T05:03:06.290Z - Submit Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+    at PromisePool.query (/Users/vishnu1720/Documents/CodeWise/backend/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at exports.submitExam (/Users/vishnu1720/Documents/CodeWise/backend/controllers/trainingExamController.js:206:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2026-02-05T05:03:16.669Z - Submit Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+    at PromisePool.query (/Users/vishnu1720/Documents/CodeWise/backend/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at exports.submitExam (/Users/vishnu1720/Documents/CodeWise/backend/controllers/trainingExamController.js:206:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2026-02-05T05:03:22.136Z - Submit Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+    at PromisePool.query (/Users/vishnu1720/Documents/CodeWise/backend/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at exports.submitExam (/Users/vishnu1720/Documents/CodeWise/backend/controllers/trainingExamController.js:206:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2026-02-05T05:03:53.801Z - Submit Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+    at PromisePool.query (/Users/vishnu1720/Documents/CodeWise/backend/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at exports.submitExam (/Users/vishnu1720/Documents/CodeWise/backend/controllers/trainingExamController.js:206:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+
+2026-02-05T05:04:04.666Z - Submit Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+Error: Cannot add or update a child row: a foreign key constraint fails (`codewise`.`training_exam_attempts`, CONSTRAINT `training_exam_attempts_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `training_exams` (`id`) ON DELETE CASCADE)
+    at PromisePool.query (/Users/vishnu1720/Documents/CodeWise/backend/node_modules/mysql2/lib/promise/pool.js:36:22)
+    at exports.submitExam (/Users/vishnu1720/Documents/CodeWise/backend/controllers/trainingExamController.js:206:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+

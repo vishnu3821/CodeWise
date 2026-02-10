@@ -1,0 +1,1 @@
+INSERT INTO code_drafts (user_id, question_id, language, code) VALUES (1, 626, 'cpp', '// test code') ON DUPLICATE KEY UPDATE code = '// update test'; SELECT * FROM code_drafts WHERE question_id = 626;
