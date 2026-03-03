@@ -2,8 +2,9 @@ const fs = require('fs');
 const path = require('path');
 const { exec, spawn } = require('child_process');
 const { v4: uuidv4 } = require('uuid');
+const sqlite3 = require('sqlite3').verbose();
 
-const TEMP_DIR = path.join(__dirname, '../../temp');
+const TEMP_DIR = path.join(__dirname, '../temp');
 
 // Ensure temp directory exists
 if (!fs.existsSync(TEMP_DIR)) {
@@ -113,6 +114,118 @@ const compileCpp = (filePath, outputId) => {
 
 exports.checkInputConsumption = checkInputConsumption;
 
+// --- SQL Handling ---
+// Seed data specifically for the CodeWise SQL Module (employees table)
+const seedSql = `
+CREATE TABLE employees (
+    emp_id INTEGER PRIMARY KEY,
+    emp_name TEXT,
+    department TEXT,
+    salary NUMERIC,
+    hire_date DATE
+);
+
+INSERT INTO employees (emp_id, emp_name, department, salary, hire_date) VALUES
+(1, 'Arjun Rao', 'Engineering', 75000.00, '2022-01-15'),
+(2, 'Meera Iyer', 'HR', 52000.00, '2021-06-20'),
+(3, 'Karan Singh', 'Finance', 68000.00, '2020-03-10'),
+(4, 'Sneha Patel', 'Marketing', 60000.00, '2023-02-01'),
+(5, 'Rahul Verma', 'Engineering', 82000.00, '2019-11-25'),
+(6, 'Ananya Sharma', 'Sales', 55000.00, '2022-07-18'),
+(7, 'Vikram Nair', 'IT Support', 48000.00, '2021-09-30'),
+(8, 'Pooja Reddy', 'Finance', 71000.00, '2020-12-12'),
+(9, 'Aman Gupta', 'Engineering', 79000.00, '2018-08-05'),
+(10, 'Divya Kapoor', 'Marketing', 62000.00, '2023-04-22');
+`;
+
+const executeSqlBatch = async (code, inputs) => {
+    // For SQL, inputs from DB are usually just the empty strings or expected output text.
+    // The "run" button passes inputs = [""] or something similar depending on testcases.
+    return new Promise((resolve) => {
+        const db = new sqlite3.Database(':memory:');
+
+        db.serialize(() => {
+            db.exec(seedSql, (err) => {
+                if (err) {
+                    db.close();
+                    return resolve({ success: false, error: { type: 'Runtime Error', message: err.message } });
+                }
+
+                // Execute user's query
+                db.all(code, [], (err, rows) => {
+                    db.close();
+                    if (err) {
+                        return resolve({ success: false, error: { type: 'Compilation Error', message: err.message } });
+                    }
+
+                    // For each input, we return the same output since SQL execution is deterministic and doesn't take stdin
+                    const results = inputs.map(() => {
+                        // Format the rows nicely for Output panel comparison
+                        let outputStr = '';
+                        if (rows && rows.length > 0) {
+                            const keys = Object.keys(rows[0]);
+                            outputStr += keys.join(' | ') + '\n';
+                            outputStr += rows.map(r => keys.map(k => r[k]).join(' | ')).join('\n');
+                        } else {
+                            outputStr = 'No rows returned';
+                        }
+
+                        return { success: true, output: outputStr, stderr: '' };
+                    });
+
+                    resolve({ success: true, results });
+                });
+            });
+        });
+    });
+};
+
+exports.executeSql = async (code, expectedQuery) => {
+    // Used by normal practice mode (codeController.js)
+    return new Promise((resolve) => {
+        const db = new sqlite3.Database(':memory:');
+
+        db.serialize(() => {
+            db.exec(seedSql, async (err) => {
+                if (err) {
+                    db.close();
+                    return resolve({ success: false, error: { type: 'Runtime Error', message: err.message } });
+                }
+
+                try {
+                    // Run Expected
+                    const expectedRows = await new Promise((res, rej) => db.all(expectedQuery, [], (e, r) => e ? rej(e) : res(r)));
+                    // Run User
+                    const userRows = await new Promise((res, rej) => db.all(code, [], (e, r) => e ? rej(e) : res(r)));
+
+                    db.close();
+
+                    const formatRows = (rows) => {
+                        if (!rows || rows.length === 0) return 'No rows returned';
+                        const keys = Object.keys(rows[0]);
+                        let str = keys.join(' | ') + '\n';
+                        str += rows.map(r => keys.map(k => r[k]).join(' | ')).join('\n');
+                        return str;
+                    };
+
+                    const expectedOutput = formatRows(expectedRows);
+                    const userOutput = formatRows(userRows);
+
+                    resolve({
+                        success: true,
+                        expectedOutput,
+                        userOutput,
+                        passed: expectedOutput === userOutput
+                    });
+                } catch (e) {
+                    db.close();
+                    resolve({ success: false, error: { type: 'Compilation Error', message: e.message } });
+                }
+            });
+        });
+    });
+};
+
 exports.executeBatch = async (code, inputs, language) => {
     console.log(`--- Executing Batch ${language.toUpperCase()} ---`);
     console.log('Code length:', code.length);
@@ -137,6 +250,10 @@ exports.executeBatch = async (code, inputs, language) => {
     if (language === 'c') extension = 'c';
     else if (language === 'cpp') extension = 'cpp';
     else if (language === 'python') extension = 'py';
+    else if (language === 'sql') {
+        // Special purely in-memory handling for SQL
+        return executeSqlBatch(code, inputs);
+    }
     else if (language === 'java') {
         extension = 'java';
         // Try to extract class name, default to Main if not found

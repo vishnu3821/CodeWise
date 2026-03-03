@@ -35,6 +35,8 @@ app.use('/api/content', contentRoutes);
 app.use('/api/training-exams', require('./routes/trainingExamRoutes'));
 app.use('/api/dashboard', require('./routes/dashboardRoutes'));
 app.use('/api/issues', require('./routes/issueRoutes'));
+app.use('/api/notifications', require('./routes/notificationRoutes'));
+app.use('/api/placement-prep', require('./routes/placementPrepRoutes'));
 
 app.get('/', (req, res) => {
     res.send('CodeWise API is running');

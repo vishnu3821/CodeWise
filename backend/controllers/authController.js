@@ -85,12 +85,45 @@ const login = async (req, res) => {
 exports.googleLogin = async (req, res) => {
     try {
         const { token } = req.body;
-        const ticket = await client.verifyIdToken({
-            idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
-        const payload = ticket.getPayload();
-        const { sub: googleId, email, name, picture } = payload;
+        let googleUser = {};
+
+        // Try verifying as ID Token first (keeping backward compatibility)
+        try {
+            const ticket = await client.verifyIdToken({
+                idToken: token,
+                audience: process.env.GOOGLE_CLIENT_ID
+            });
+            const payload = ticket.getPayload();
+            googleUser = {
+                googleId: payload.sub,
+                email: payload.email,
+                name: payload.name,
+                picture: payload.picture
+            };
+        } catch (idTokenError) {
+            // If ID Token verification fails, assume it's an Access Token and call UserInfo API
+            // console.log("ID Token verification failed, trying Access Token...");
+
+            // fetch is available in Node 18+
+            const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            if (!response.ok) {
+                console.error("Google UserInfo failed:", response.status, response.statusText);
+                throw new Error('Failed to verify access token');
+            }
+
+            const data = await response.json();
+            googleUser = {
+                googleId: data.sub,
+                email: data.email,
+                name: data.name,
+                picture: data.picture
+            };
+        }
+
+        const { googleId, email, name, picture } = googleUser;
 
         const [users] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
         let user;
@@ -127,7 +160,6 @@ exports.googleLogin = async (req, res) => {
         });
     } catch (error) {
         console.error('Google Auth Error:', error);
-        console.error('GOOGLE_CLIENT_ID configured:', !!process.env.GOOGLE_CLIENT_ID);
         res.status(500).json({ message: 'Google Sign-In failed', error: error.message });
     }
 };

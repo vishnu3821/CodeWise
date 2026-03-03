@@ -1,5 +1,15 @@
 const db = require('../config/db');
 
+// --- Helper: Log Action ---
+const logContentManagerAction = async (adminId, action, targetType, targetId, details) => {
+    try {
+        await db.query(
+            'INSERT INTO audit_logs (admin_id, action, target_type, target_id, details) VALUES (?, ?, ?, ?, ?)',
+            [adminId, action, targetType, targetId, JSON.stringify(details)]
+        );
+    } catch (err) { }
+};
+
 exports.getQuestions = async (req, res) => {
     try {
         const { language_id, topic_id, subtopic_id, status } = req.query;
@@ -60,6 +70,7 @@ exports.createQuestion = async (req, res) => {
         const {
             language_id, topic_id, subtopic_id, title, description, difficulty,
             input_format, output_format, constraints, sample_input, sample_output, explanation,
+            time_limit, memory_limit,
             default_code, solution_code, is_active, order_index, test_cases, status,
             type, options, correct_option, model_answer
         } = req.body;
@@ -79,8 +90,8 @@ exports.createQuestion = async (req, res) => {
         // Insert Question
         const [result] = await conn.query(
             `INSERT INTO questions 
-            (language_id, topic_id, subtopic_id, title, description, difficulty, input_format, output_format, constraints, sample_input, sample_output, explanation, default_code, solution_code, is_active, order_index, created_by, status, submitted_at, type, options, correct_option, model_answer)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (language_id, topic_id, subtopic_id, title, description, difficulty, input_format, output_format, constraints, sample_input, sample_output, explanation, time_limit, memory_limit, default_code, solution_code, is_active, order_index, created_by, status, submitted_at, type, options, correct_option, model_answer)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
             [
                 language_id || null,
                 topic_id || null,
@@ -94,6 +105,8 @@ exports.createQuestion = async (req, res) => {
                 sample_input || null,
                 sample_output || null,
                 explanation || null,
+                time_limit || 2000,
+                memory_limit || 128,
                 default_code || null,
                 solution_code || null,
                 is_active ? 1 : 0,
@@ -116,6 +129,9 @@ exports.createQuestion = async (req, res) => {
         }
 
         await conn.commit();
+
+        await logContentManagerAction(createdBy, 'create', 'question', questionId, { title, difficulty });
+
         res.status(201).json({ message: 'Question created successfully', id: questionId });
     } catch (err) {
         await conn.rollback();
@@ -134,6 +150,7 @@ exports.updateQuestion = async (req, res) => {
         const {
             language_id, topic_id, subtopic_id, title, description, difficulty,
             input_format, output_format, constraints, sample_input, sample_output, explanation,
+            time_limit, memory_limit,
             default_code, solution_code, is_active, order_index, test_cases, status,
             type, options, correct_option, model_answer
         } = req.body;
@@ -180,6 +197,8 @@ exports.updateQuestion = async (req, res) => {
             sample_input || null,
             sample_output || null,
             explanation || null,
+            time_limit || 2000,
+            memory_limit || 128,
             default_code || null,
             solution_code || null,
             is_active ? 1 : 0,
@@ -192,7 +211,7 @@ exports.updateQuestion = async (req, res) => {
 
         let sql = `UPDATE questions SET 
             language_id=?, topic_id=?, subtopic_id=?, title=?, description=?, difficulty=?, 
-            input_format=?, output_format=?, constraints=?, sample_input=?, sample_output=?, explanation=?, 
+            input_format=?, output_format=?, constraints=?, sample_input=?, sample_output=?, explanation=?, time_limit=?, memory_limit=?,
             default_code=?, solution_code=?, is_active=?, order_index=?, type=?, options=?, correct_option=?, model_answer=?`;
 
         if (newStatus) {
@@ -207,6 +226,9 @@ exports.updateQuestion = async (req, res) => {
         await conn.query(sql, updateFields);
 
         await conn.commit();
+
+        await logContentManagerAction(req.user.id, 'update', 'question', id, { title, difficulty });
+
         res.json({ message: 'Question updated successfully' });
     } catch (err) {
         await conn.rollback();
@@ -222,6 +244,9 @@ exports.toggleQuestionStatus = async (req, res) => {
     const { is_active } = req.body;
     try {
         await db.query('UPDATE questions SET is_active = ? WHERE id = ?', [is_active ? 1 : 0, id]);
+
+        await logContentManagerAction(req.user.id, is_active ? 'enable_question' : 'disable_question', 'question', id, { is_active });
+
         res.json({ message: 'Question status updated' });
     } catch (err) {
         console.error(err);

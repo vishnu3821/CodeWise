@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Environment
+.env
+**/.env
+
+# Logs
+*.log
+npm-debug.log*
+
+# Build
+frontend/build/
+
+# SQLite DBs (runtime data)
+*.db
+
+# Uploads (runtime data — keep folder, ignore contents)
+backend/uploads/profiles/*
+backend/uploads/companies/*
+!backend/uploads/profiles/.gitkeep
+!backend/uploads/companies/.gitkeep

@@ -1,5 +1,17 @@
 const db = require('../config/db');
 
+// --- Helper: Log Action ---
+const logContentManagerAction = async (adminId, action, targetType, targetId, details) => {
+    try {
+        await db.query(
+            'INSERT INTO audit_logs (admin_id, action, target_type, target_id, details) VALUES (?, ?, ?, ?, ?)',
+            [adminId, action, targetType, targetId, JSON.stringify(details)]
+        );
+    } catch (err) {
+        console.error('Audit Log Error:', err);
+    }
+};
+
 // List Exams
 exports.getExams = async (req, res) => {
     try {
@@ -106,6 +118,8 @@ exports.createExam = async (req, res) => {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `, [title, exam_code, language_id || null, duration_minutes, pass_percentage, type || 'TRAINING', description, start_time || null, end_time || null, req.user.id, initialStatus, submittedAt]);
 
+        await logContentManagerAction(req.user.id, 'create', 'exam', result.insertId, { title, exam_code, language_id });
+
         res.status(201).json({ message: 'Exam created successfully', id: result.insertId });
     } catch (error) {
         console.error("CREATE EXAM ERROR:", error);
@@ -164,6 +178,8 @@ exports.updateExam = async (req, res) => {
         params.push(id);
 
         await db.query(sql, params);
+
+        await logContentManagerAction(req.user.id, 'update', 'exam', id, { title, exam_code });
 
         res.json({ message: 'Exam updated successfully' });
     } catch (error) {
@@ -241,6 +257,8 @@ exports.addQuestionToExam = async (req, res) => {
         // Recalculate Total Marks
         await recalculateTotalMarks(id);
 
+        await logContentManagerAction(req.user.id, 'add_question', 'exam', id, { question_id, marks });
+
         res.json({ message: 'Question added to exam' });
     } catch (error) {
         console.error(error);
@@ -258,6 +276,8 @@ exports.removeQuestionFromExam = async (req, res) => {
 
         // Recalculate Total Marks
         await recalculateTotalMarks(id);
+
+        await logContentManagerAction(req.user.id, 'remove_question', 'exam', id, { questionId });
 
         res.json({ message: 'Question removed from exam' });
     } catch (error) {

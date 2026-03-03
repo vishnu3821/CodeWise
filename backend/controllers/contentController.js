@@ -1,5 +1,15 @@
 const db = require('../config/db');
 
+// --- Helper: Log Action ---
+const logContentManagerAction = async (adminId, action, targetType, targetId, details) => {
+    try {
+        await db.query(
+            'INSERT INTO audit_logs (admin_id, action, target_type, target_id, details) VALUES (?, ?, ?, ?, ?)',
+            [adminId, action, targetType, targetId, JSON.stringify(details)]
+        );
+    } catch (err) { }
+};
+
 exports.getAllLanguages = async (req, res) => {
     try {
         const [languages] = await db.query(`
@@ -25,7 +35,7 @@ exports.createLanguage = async (req, res) => {
         const [existing] = await db.query('SELECT id FROM languages WHERE slug = ? OR name = ?', [slug, name]);
         if (existing.length > 0) return res.status(400).json({ message: 'Language name or slug already exists' });
 
-        await db.query(
+        const [result] = await db.query(
             'INSERT INTO languages (name, slug, description, difficulty_levels, is_active, has_practice, has_notes, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
             [
                 name,
@@ -38,6 +48,8 @@ exports.createLanguage = async (req, res) => {
                 createdBy
             ]
         );
+
+        await logContentManagerAction(createdBy, 'create', 'language', result.insertId, { name, slug });
 
         res.status(201).json({ message: 'Language created successfully' });
     } catch (err) {
@@ -55,6 +67,9 @@ exports.updateLanguage = async (req, res) => {
             'UPDATE languages SET name = ?, description = ?, difficulty_levels = ?, has_practice = ?, has_notes = ? WHERE id = ?',
             [name, description, JSON.stringify(difficulty_levels), has_practice ? 1 : 0, has_notes ? 1 : 0, id]
         );
+
+        await logContentManagerAction(req.user.id, 'update', 'language', id, { name });
+
         res.json({ message: 'Language updated successfully' });
     } catch (err) {
         console.error(err);
@@ -68,6 +83,9 @@ exports.toggleLanguageStatus = async (req, res) => {
 
     try {
         await db.query('UPDATE languages SET is_active = ? WHERE id = ?', [is_active ? 1 : 0, id]);
+
+        await logContentManagerAction(req.user.id, is_active ? 'enable_language' : 'disable_language', 'language', id, { is_active });
+
         res.json({ message: `Language ${is_active ? 'enabled' : 'disabled'} successfully` });
     } catch (err) {
         console.error(err);
@@ -98,10 +116,13 @@ exports.createTopic = async (req, res) => {
         const [existing] = await db.query('SELECT id FROM topics WHERE slug = ?', [slug]);
         if (existing.length > 0) return res.status(400).json({ message: 'Topic slug must be unique' });
 
-        await db.query(
+        const [result] = await db.query(
             'INSERT INTO topics (language_id, name, slug, order_index, is_active, created_by) VALUES (?, ?, ?, ?, ?, ?)',
             [language_id, name, slug, order_index || 0, is_active ? 1 : 0, createdBy]
         );
+
+        await logContentManagerAction(createdBy, 'create', 'topic', result.insertId, { name, language_id });
+
         res.status(201).json({ message: 'Topic created successfully' });
     } catch (err) {
         console.error(err);
@@ -118,6 +139,9 @@ exports.updateTopic = async (req, res) => {
             'UPDATE topics SET name = ?, order_index = ? WHERE id = ?',
             [name, order_index, id]
         );
+
+        await logContentManagerAction(req.user.id, 'update', 'topic', id, { name });
+
         res.json({ message: 'Topic updated successfully' });
     } catch (err) {
         console.error(err);
@@ -130,6 +154,9 @@ exports.toggleTopicStatus = async (req, res) => {
     const { is_active } = req.body;
     try {
         await db.query('UPDATE topics SET is_active = ? WHERE id = ?', [is_active ? 1 : 0, id]);
+
+        await logContentManagerAction(req.user.id, is_active ? 'enable_topic' : 'disable_topic', 'topic', id, { is_active });
+
         res.json({ message: 'Topic status updated' });
     } catch (err) {
         console.error(err);
@@ -158,10 +185,13 @@ exports.createSubtopic = async (req, res) => {
         const [existing] = await db.query('SELECT id FROM subtopics WHERE slug = ?', [slug]);
         if (existing.length > 0) return res.status(400).json({ message: 'Subtopic slug must be unique' });
 
-        await db.query(
+        const [result] = await db.query(
             'INSERT INTO subtopics (topic_id, name, slug, order_index, is_active, created_by) VALUES (?, ?, ?, ?, ?, ?)',
             [topic_id, name, slug, order_index || 0, is_active ? 1 : 0, createdBy]
         );
+
+        await logContentManagerAction(createdBy, 'create', 'subtopic', result.insertId, { name, topic_id });
+
         res.status(201).json({ message: 'Subtopic created successfully' });
     } catch (err) {
         console.error(err);
@@ -178,6 +208,9 @@ exports.updateSubtopic = async (req, res) => {
             'UPDATE subtopics SET name = ?, order_index = ? WHERE id = ?',
             [name, order_index, id]
         );
+
+        await logContentManagerAction(req.user.id, 'update', 'subtopic', id, { name });
+
         res.json({ message: 'Subtopic updated successfully' });
     } catch (err) {
         console.error(err);
@@ -190,6 +223,9 @@ exports.toggleSubtopicStatus = async (req, res) => {
     const { is_active } = req.body;
     try {
         await db.query('UPDATE subtopics SET is_active = ? WHERE id = ?', [is_active ? 1 : 0, id]);
+
+        await logContentManagerAction(req.user.id, is_active ? 'enable_subtopic' : 'disable_subtopic', 'subtopic', id, { is_active });
+
         res.json({ message: 'Subtopic status updated' });
     } catch (err) {
         console.error(err);
