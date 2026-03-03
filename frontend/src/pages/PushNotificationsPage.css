@@ -1,0 +1,256 @@
+.push-notification-page {
+    padding: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #111827;
+}
+
+.pn-header {
+    margin-bottom: 24px;
+}
+
+.pn-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: #111827;
+}
+
+.pn-subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin: 0;
+}
+
+.pn-divider {
+    border: 0;
+    height: 1px;
+    background-color: #e5e7eb;
+    margin-bottom: 32px;
+}
+
+.pn-card-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 32px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    border: 1px solid #f3f4f6;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.pn-form {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pn-form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.pn-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.pn-input,
+.pn-textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #111827;
+    background-color: #f9fafb;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.pn-input:focus,
+.pn-textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.pn-textarea {
+    min-height: 120px;
+    resize: none;
+}
+
+.pn-char-counter {
+    font-size: 12px;
+    color: #9ca3af;
+    text-align: right;
+    margin-top: 4px;
+}
+
+.pn-radio-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.pn-radio-card {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.2s ease;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pn-radio-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.pn-card-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.pn-icon {
+    margin-bottom: 4px;
+}
+
+.pn-card-text {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.pn-radio-card:hover {
+    border-color: #9ca3af;
+    background-color: #f9fafb;
+}
+
+.pn-radio-card.selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+    /* light blue */
+}
+
+.pn-radio-card.selected .pn-card-content {
+    color: #1d4ed8;
+    /* darker blue font */
+}
+
+.pn-check {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 20px;
+    height: 20px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.pn-form-actions {
+    margin-top: 16px;
+}
+
+.pn-submit-btn {
+    width: 100%;
+    height: 48px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.pn-submit-btn:hover:not(.disabled) {
+    background-color: #1d4ed8;
+}
+
+.pn-submit-btn:active:not(.disabled) {
+    transform: scale(0.98);
+}
+
+.pn-submit-btn.disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.pn-spinner {
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pn-toast {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideUp 0.3s ease forwards;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+}
+
+.pn-toast.success {
+    background-color: #10b981;
+}
+
+.pn-toast.error {
+    background-color: #ef4444;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}

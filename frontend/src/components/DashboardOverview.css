@@ -1,0 +1,291 @@
+/* Overview Layout */
+.dashboard-overview {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.overview-header h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.overview-header p {
+    color: #64748B;
+    font-size: 1rem;
+}
+
+/* Stats Row */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    /* Align top */
+    gap: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #F1F5F9;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.stat-icon.green {
+    background-color: #DCFCE7;
+    color: #16A34A;
+}
+
+.stat-icon.blue {
+    background-color: #DBEAFE;
+    color: #2563EB;
+}
+
+.stat-icon.orange {
+    background-color: #FFEDD5;
+    color: #EA580C;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin: 0;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.stat-info p {
+    color: #64748B;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0 0 16px 0;
+}
+
+.stat-progress {
+    height: 6px;
+    background-color: #F1F5F9;
+    border-radius: 3px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.stat-progress-bar {
+    height: 100%;
+    border-radius: 3px;
+}
+
+/* Content Grid */
+.content-grid {
+    display: grid;
+    grid-template-columns: 1.8fr 1.2fr;
+    /* Adjusted ratio */
+    gap: 1.5rem;
+}
+
+/* Continue Learning Card */
+.learn-card {
+    background: white;
+    border-radius: 12px;
+    padding: 2.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #F1F5F9;
+}
+
+.learn-content {
+    flex: 1;
+    padding-right: 2rem;
+}
+
+.learn-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0F172A;
+    margin-bottom: 1rem;
+}
+
+.learn-content p {
+    color: #64748B;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.resume-btn {
+    background-color: #2563EB;
+    /* Bright Blue like reference */
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.resume-btn:hover {
+    background-color: #1D4ED8;
+}
+
+/* Recently Solved Widget */
+.recent-widget {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #F1F5F9;
+    display: flex;
+    flex-direction: column;
+}
+
+.widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.widget-header h3 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #0F172A;
+}
+
+.recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.recent-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.status-icon-small {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background-color: #DCFCE7;
+    color: #16A34A;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.status-icon-small.gray {
+    background-color: #F1F5F9;
+    color: #64748B;
+}
+
+.recent-details {
+    flex: 1;
+}
+
+.recent-title {
+    font-weight: 600;
+    color: #0F172A;
+    font-size: 1rem;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.recent-meta {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+/* Badges matches user image */
+.badge-label {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-label.lang-c {
+    background: #DBEAFE;
+    color: #2563EB;
+}
+
+/* Blue C */
+.badge-label.lang-python {
+    background: #F1F5F9;
+    color: #475569;
+}
+
+/* Gray Python */
+.badge-label.lang-java {
+    background: #FFEDD5;
+    color: #EA580C;
+}
+
+/* Orange Java */
+
+.badge-label.easy {
+    background: #DCFCE7;
+    color: #16A34A;
+}
+
+.badge-label.medium {
+    background: #FEF3C7;
+    color: #D97706;
+}
+
+.badge-label.hard {
+    background: #FEE2E2;
+    color: #DC2626;
+}
+
+.recent-time {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+}
+
+.time-label {
+    font-size: 0.75rem;
+    color: #94A3B8;
+}
+
+.time-val {
+    font-size: 0.85rem;
+    color: #64748B;
+    font-weight: 500;
+}
