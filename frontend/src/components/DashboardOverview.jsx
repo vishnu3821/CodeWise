@@ -44,16 +44,14 @@ const DashboardOverview = () => {
                 const token = localStorage.getItem('token');
 
                 try {
+                    const authHeader = { headers: { 'Authorization': `Bearer ${token}` } };
+
                     // 1. Fetch Stats
-                    const statsRes = await axios.get(`http://localhost:5001/api/user/progress/profile`, {
-                        headers: { 'x-user-id': userData.id }
-                    });
+                    const statsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/progress/profile`, authHeader);
                     setStats(statsRes.data.stats);
 
                     // 2. Fetch Recent
-                    const recentRes = await axios.get('http://localhost:5001/api/dashboard/recently-solved', {
-                        headers: { 'x-auth-token': token }
-                    });
+                    const recentRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard/recently-solved`, authHeader);
                     setRecentProblems(recentRes.data.slice(0, 3)); // Limit to 3 items
 
                 } catch (err) {

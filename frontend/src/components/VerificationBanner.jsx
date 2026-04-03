@@ -33,7 +33,7 @@ const VerificationBanner = ({ user }) => {
         setSending(true);
         setError('');
         try {
-            await axios.post('http://localhost:5001/api/auth/send-verification-email', { email: user.email });
+            await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/send-verification-email`, { email: user.email });
             setSent(true);
             setCooldown(60); // 60s cooldown
             setTimeout(() => setSent(false), 3000); // Reset "Sent" icon state after 3s, but keep cooldown

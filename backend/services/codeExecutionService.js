@@ -289,7 +289,7 @@ exports.executeBatch = async (code, inputs, language) => {
         if (language === 'cpp') {
             const outPath = path.join(execDir, 'obj_cpp');
             await new Promise((resolve, reject) => {
-                exec(`g++ -std=c++17 "${filePath}" -o "${outPath}"`, (err, stdout, stderr) => {
+                exec(`g++ -std=c++17 "${filePath}" -o "${outPath}"`, { env: Object.assign({}, process.env, { TMPDIR: execDir }) }, (err, stdout, stderr) => {
                     if (err) reject({ type: 'Compilation Error', message: stderr });
                     else resolve();
                 });
@@ -298,7 +298,7 @@ exports.executeBatch = async (code, inputs, language) => {
         } else if (language === 'c') {
             const outPath = path.join(execDir, 'obj_c');
             await new Promise((resolve, reject) => {
-                exec(`gcc "${filePath}" -o "${outPath}"`, (err, stdout, stderr) => {
+                exec(`gcc "${filePath}" -o "${outPath}"`, { env: Object.assign({}, process.env, { TMPDIR: execDir }) }, (err, stdout, stderr) => {
                     if (err) reject({ type: 'Compilation Error', message: stderr });
                     else resolve();
                 });
@@ -306,7 +306,7 @@ exports.executeBatch = async (code, inputs, language) => {
             binaryPath = outPath;
         } else if (language === 'java') {
             await new Promise((resolve, reject) => {
-                exec(`javac "${filePath}"`, (err, stdout, stderr) => {
+                exec(`javac "${filePath}"`, { env: Object.assign({}, process.env, { TMPDIR: execDir }) }, (err, stdout, stderr) => {
                     if (err) reject({ type: 'Compilation Error', message: stderr });
                     else resolve();
                 });

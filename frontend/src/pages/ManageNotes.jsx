@@ -31,7 +31,7 @@ const ManageNotes = () => {
     const fetchMetadata = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5001/api/content/languages', {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLanguages(res.data.filter(l => l.has_notes));
@@ -44,7 +44,7 @@ const ManageNotes = () => {
         setLoading(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5001/api/content/notes', {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/notes`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotes(res.data);
@@ -99,14 +99,14 @@ const ManageNotes = () => {
                     alert('Please upload a PDF file.');
                     return;
                 }
-                await axios.post('http://localhost:5001/api/content/notes', data, {
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/notes`, data, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 });
             } else {
-                await axios.put(`http://localhost:5001/api/content/notes/${currentNote.id}`, data, {
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/notes/${currentNote.id}`, data, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                         'Content-Type': 'multipart/form-data'
@@ -125,7 +125,7 @@ const ManageNotes = () => {
     const toggleStatus = async (id, currentStatus) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.patch(`http://localhost:5001/api/content/notes/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/notes/${id}/status`,
                 { is_active: !currentStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -139,7 +139,7 @@ const ManageNotes = () => {
         if (!window.confirm('Are you sure you want to request DELETION for this note? This will send it to admin for approval.')) return;
         const token = localStorage.getItem('token');
         try {
-            await axios.patch(`http://localhost:5001/api/content/notes/${id}/request-delete`, {}, {
+            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/notes/${id}/request-delete`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             alert('Deletion request sent to Admin.');
@@ -160,7 +160,7 @@ const ManageNotes = () => {
             const token = localStorage.getItem('token');
             const slug = newLanguageName.toLowerCase().replace(/\s+/g, '-');
 
-            const res = await axios.post('http://localhost:5001/api/content/languages',
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/content/languages`,
                 { name: newLanguageName, slug, is_active: true },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
@@ -224,7 +224,7 @@ const ManageNotes = () => {
                                     </td>
                                     <td style={{ padding: '1rem' }}>
                                         <a
-                                            href={`http://localhost:5001${note.file_url}`}
+                                            href={`${process.env.REACT_APP_API_URL}${note.file_url}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             style={{ display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none', color: '#64748B' }}

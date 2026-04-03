@@ -27,11 +27,14 @@ exports.submitCode = async (req, res) => {
     try {
         // SQL Special Handling
         if (language === 'sql') {
-            const [questions] = await db.query('SELECT solution_code FROM questions WHERE id = ?', [question_id]);
-            if (!questions.length || !questions[0].solution_code) {
+            const qResult = await db.query(
+                'SELECT solution_code FROM questions WHERE id = $1',
+                [question_id]
+            );
+            if (qResult.rows.length === 0 || !qResult.rows[0].solution_code) {
                 return res.status(404).json({ message: 'Question or solution not found' });
             }
-            const expectedQuery = questions[0].solution_code;
+            const expectedQuery = qResult.rows[0].solution_code;
 
             const result = await codeExecutionService.executeSql(code, expectedQuery);
 
@@ -48,7 +51,7 @@ exports.submitCode = async (req, res) => {
 
             // Save submission
             await db.query(
-                'INSERT INTO submissions (question_id, user_id, language, code, status) VALUES (?, ?, ?, ?, ?)',
+                'INSERT INTO submissions (question_id, user_id, language, code, status) VALUES ($1, $2, $3, $4, $5)',
                 [question_id, user_id || null, language || 'sql', code, finalStatus]
             );
 
@@ -56,8 +59,10 @@ exports.submitCode = async (req, res) => {
             if (finalStatus === 'Passed' && user_id) {
                 try {
                     await db.query(
-                        'INSERT IGNORE INTO user_question_status (user_id, question_id, status) VALUES (?, ?, ?)',
-                        [user_id, question_id, 'Passed']
+                        `INSERT INTO user_question_status (user_id, question_id, status)
+                         VALUES ($1, $2, 'Passed')
+                         ON CONFLICT (user_id, question_id) DO UPDATE SET status = 'Passed'`,
+                        [user_id, question_id]
                     );
                     const progressController = require('../controllers/progressController');
                     await progressController.checkProgressCascade(user_id, question_id);
@@ -73,12 +78,13 @@ exports.submitCode = async (req, res) => {
             });
         }
 
-        // Standard Language Handling
+        // Standard Language Handling (C, C++, Java, Python)
         // Fetch ALL test cases (Hidden + Sample)
-        const [testCases] = await db.query(
-            'SELECT input, expected_output FROM test_cases WHERE question_id = ?',
+        const tcResult = await db.query(
+            'SELECT input, expected_output FROM test_cases WHERE question_id = $1',
             [question_id]
         );
+        const testCases = tcResult.rows;
 
         if (testCases.length === 0) {
             return res.status(404).json({ message: 'No test cases found for this question' });
@@ -91,15 +97,13 @@ exports.submitCode = async (req, res) => {
 
         // Handle Global Errors (Compilation, Input Check)
         if (!batchResult.success) {
-            // Check if it's our specific input validation error
             if (batchResult.error && batchResult.error.type === 'Wrong Answer') {
                 return res.json({
                     status: 'Wrong Answer',
                     message: batchResult.error.message,
-                    failed_test_case_index: 0 // Fail on the first one conceptually
+                    failed_test_case_index: 0
                 });
             }
-            // Compilation or Runtime Error during setup
             return res.json({
                 status: batchResult.error.type, // 'Compilation Error'
                 message: batchResult.error.message
@@ -128,18 +132,24 @@ exports.submitCode = async (req, res) => {
             }
         }
 
+        // Normalize status to match CHECK constraint ('Passed','Failed','Compilation Error','Runtime Error')
+        const allowedStatuses = ['Passed', 'Failed', 'Compilation Error', 'Runtime Error'];
+        const dbStatus = allowedStatuses.includes(finalStatus) ? finalStatus : 'Failed';
+
         // Save submission
         await db.query(
-            'INSERT INTO submissions (question_id, user_id, language, code, status) VALUES (?, ?, ?, ?, ?)',
-            [question_id, user_id || null, req.body.language || 'c', code, finalStatus]
+            'INSERT INTO submissions (question_id, user_id, language, code, status) VALUES ($1, $2, $3, $4, $5)',
+            [question_id, user_id || null, req.body.language || 'c', code, dbStatus]
         );
 
         // If passed and user_id is provided, mark as completed
         if (finalStatus === 'Passed' && user_id) {
             try {
                 await db.query(
-                    'INSERT IGNORE INTO user_question_status (user_id, question_id, status) VALUES (?, ?, ?)',
-                    [user_id, question_id, 'Passed']
+                    `INSERT INTO user_question_status (user_id, question_id, status)
+                     VALUES ($1, $2, 'Passed')
+                     ON CONFLICT (user_id, question_id) DO UPDATE SET status = 'Passed'`,
+                    [user_id, question_id]
                 );
 
                 const progressController = require('../controllers/progressController');
@@ -156,8 +166,8 @@ exports.submitCode = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        console.error('[CODE] submitCode error:', error.message, '\n', error.stack);
+        res.status(500).json({ message: 'Server error', detail: error.message });
     }
 };
 
@@ -171,12 +181,14 @@ exports.runTestCases = async (req, res) => {
     try {
         // SQL Special Handling
         if (language === 'sql') {
-            // Fetch Expected Query
-            const [questions] = await db.query('SELECT solution_code FROM questions WHERE id = ?', [question_id]);
-            if (!questions.length || !questions[0].solution_code) {
+            const qResult = await db.query(
+                'SELECT solution_code FROM questions WHERE id = $1',
+                [question_id]
+            );
+            if (qResult.rows.length === 0 || !qResult.rows[0].solution_code) {
                 return res.status(404).json({ message: 'Question or solution not found' });
             }
-            const expectedQuery = questions[0].solution_code;
+            const expectedQuery = qResult.rows[0].solution_code;
 
             const result = await codeExecutionService.executeSql(code, expectedQuery);
 
@@ -188,28 +200,25 @@ exports.runTestCases = async (req, res) => {
                 });
             }
 
-            // Return in format compatible with frontend "Run Results"
-            // For SQL, we just show the output of the user's query as a single "test case" result
             return res.json({
                 status: 'Accepted',
                 results: [{
                     id: 1,
                     input: 'Execute Query',
-                    expectedOutput: result.expectedOutput, // Show what was expected (table)
-                    userOutput: result.userOutput, // Show what user got (table)
-                    status: result.passed ? 'Passed' : 'Failed', // Strict match? 
-                    // For "Run", we usually just want to see output, but we can hint if it matches
+                    expectedOutput: result.expectedOutput,
+                    userOutput: result.userOutput,
+                    status: result.passed ? 'Passed' : 'Failed',
                 }]
             });
         }
 
         // Standard Language Handling (C, C++, Java, Python)
-        // Fetch PUBLIC test cases (is_hidden = 0) for "Run"
-        const [testCases] = await db.query(
-            'SELECT input, expected_output FROM test_cases WHERE question_id = ? AND (is_hidden = 0 OR is_sample = 1)',
+        // Fetch PUBLIC test cases (is_hidden = FALSE) for "Run"
+        const tcResult = await db.query(
+            'SELECT input, expected_output FROM test_cases WHERE question_id = $1 AND (is_hidden = FALSE OR is_sample = TRUE)',
             [question_id]
         );
-        // ... existing logic ...
+        const testCases = tcResult.rows;
 
         if (testCases.length === 0) {
             return res.status(404).json({ message: 'No sample test cases found' });
@@ -227,7 +236,6 @@ exports.runTestCases = async (req, res) => {
                 message: batchResult.error.message,
                 compilation_error: batchResult.error.type === 'Compilation Error' ? batchResult.error.message : null,
                 runtime_error: batchResult.error.type === 'Runtime Error' ? batchResult.error.message : null,
-                // Specifically for input check failure
                 error_type: batchResult.error.type
             });
         }
@@ -237,7 +245,7 @@ exports.runTestCases = async (req, res) => {
 
         for (let i = 0; i < testCases.length; i++) {
             const testCase = testCases[i];
-            const result = batchResult.results[i]; // Result corresponds to inputs[i]
+            const result = batchResult.results[i];
 
             const caseResult = {
                 id: i + 1,
@@ -267,7 +275,7 @@ exports.runTestCases = async (req, res) => {
         });
 
     } catch (error) {
-        console.error(error);
+        console.error('[CODE] runTestCases error:', error.message);
         res.status(500).json({ message: 'Server error' });
     }
 };

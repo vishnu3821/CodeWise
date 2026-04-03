@@ -28,13 +28,13 @@ const PrepCompanyModules = () => {
                 const token = localStorage.getItem('token');
 
                 // Fetch Company Details
-                const compRes = await axios.get(`http://localhost:5001/api/placement-prep/companies/${companyId}`, {
+                const compRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${companyId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setCompany(compRes.data);
 
                 // Fetch Modules
-                const modRes = await axios.get(`http://localhost:5001/api/placement-prep/companies/${compRes.data.id}/modules`, {
+                const modRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${compRes.data.id}/modules`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setModules(modRes.data);
@@ -54,7 +54,7 @@ const PrepCompanyModules = () => {
     const fetchModules = async (compId) => {
         try {
             const token = localStorage.getItem('token');
-            const modRes = await axios.get(`http://localhost:5001/api/placement-prep/companies/${compId}/modules`, {
+            const modRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${compId}/modules`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setModules(modRes.data);
@@ -117,12 +117,12 @@ const PrepCompanyModules = () => {
             };
 
             if (modalMode === 'add') {
-                await axios.post(`http://localhost:5001/api/placement-prep/companies/${company.id}/modules`, payload, {
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${company.id}/modules`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 toast.success('Module added successfully');
             } else {
-                await axios.put(`http://localhost:5001/api/placement-prep/modules/${currentModule.id}`, payload, {
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/placement-prep/modules/${currentModule.id}`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 toast.success('Module updated successfully');
@@ -143,7 +143,7 @@ const PrepCompanyModules = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5001/api/placement-prep/modules/${modId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/placement-prep/modules/${modId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast.success('Module deleted successfully');

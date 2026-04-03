@@ -36,7 +36,7 @@ const Login = () => {
     const googleLogin = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
-                const { data } = await axios.post('http://localhost:5001/api/auth/google', {
+                const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/google`, {
                     token: tokenResponse.access_token
                 });
 
@@ -66,7 +66,7 @@ const Login = () => {
                 throw new Error("Passwords do not match");
             }
 
-            const { data } = await axios.post(`http://localhost:5001${endpoint}`, formData);
+            const { data } = await axios.post(`${process.env.REACT_APP_API_URL}${endpoint}`, formData);
 
             localStorage.setItem('user', JSON.stringify(data.user));
             if (data.token) {
@@ -87,7 +87,7 @@ const Login = () => {
         e.preventDefault();
         setForgotMessage('');
         try {
-            const { data } = await axios.post('http://localhost:5001/api/auth/forgot-password', { email: forgotEmail });
+            const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/forgot-password`, { email: forgotEmail });
             setForgotMessage(data.message || 'Reset link sent!');
         } catch (err) {
             setForgotMessage(err.response?.data?.message || 'Failed to send reset link');

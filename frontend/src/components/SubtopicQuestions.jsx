@@ -15,7 +15,7 @@ const SubtopicQuestions = () => {
         const fetchData = async () => {
             try {
                 // Fetch subtopic questions
-                const questionsRes = await axios.get(`http://localhost:5001/api/subtopics/${subtopicId}/questions`);
+                const questionsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/subtopics/${subtopicId}/questions`);
                 setSubtopicName(questionsRes.data.subtopic);
                 setQuestions(questionsRes.data.questions);
 
@@ -23,7 +23,7 @@ const SubtopicQuestions = () => {
                 const userStr = localStorage.getItem('user');
                 if (userStr) {
                     const user = JSON.parse(userStr);
-                    const completedRes = await axios.get(`http://localhost:5001/api/users/${user.id}/completed-questions`);
+                    const completedRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${user.id}/completed-questions`);
                     setCompletedQuestions(new Set(completedRes.data));
                 }
 

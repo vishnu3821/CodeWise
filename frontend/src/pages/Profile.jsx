@@ -9,16 +9,11 @@ const Profile = () => {
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const userStr = localStorage.getItem('user');
-            if (userStr) {
-                const user = JSON.parse(userStr);
+            const token = localStorage.getItem('token');
+            if (token) {
                 try {
-                    // Assuming endpoint requires nothing or user ID in header/query?
-                    // Implementation plan said verify JWT or trust header.
-                    // Frontend usually sends nothing if no interceptor, 
-                    // but we implemented getUserId middleware in progressRoutes checking header 'x-user-id'
-                    const res = await axios.get(`http://localhost:5001/api/user/progress/profile`, {
-                        headers: { 'x-user-id': user.id }
+                    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/progress/profile`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
                     setProfile(res.data);
                 } catch (err) {

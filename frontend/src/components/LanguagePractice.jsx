@@ -11,7 +11,7 @@ const LanguagePractice = () => {
     useEffect(() => {
         const fetchLanguages = async () => {
             try {
-                const response = await axios.get('http://localhost:5001/api/languages');
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/languages`);
                 // Filter languages that are enabled for practice
                 const practiceLanguages = response.data.filter(lang => lang.has_practice);
                 setLanguages(practiceLanguages);

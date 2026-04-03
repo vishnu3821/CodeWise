@@ -281,7 +281,7 @@ const TrainingExamSession = () => {
                 const headers = { Authorization: `Bearer ${token}` };
                 if (examPassword) headers['x-exam-password'] = examPassword;
 
-                const res = await axios.get(`http://localhost:5001/api/training-exams/${id}`, { headers });
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}`, { headers });
 
                 const examData = res.data;
                 if (!examData) throw new Error("No exam data returned");
@@ -425,7 +425,7 @@ const TrainingExamSession = () => {
 
             const token = localStorage.getItem('token');
             // Execute Code API
-            const res = await axios.post(`http://localhost:5001/api/training-exams/${id}/execute-code`, {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}/execute-code`, {
                 code: code || "",
                 questionId,
                 language: codingLanguage,
@@ -460,7 +460,7 @@ const TrainingExamSession = () => {
         setIsSubmitting(true);
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.post(`http://localhost:5001/api/training-exams/${id}/submit`, {
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}/submit`, {
                 answers,
                 tabSwitchCount,
                 autoSubmitted: isAutoSubmit,

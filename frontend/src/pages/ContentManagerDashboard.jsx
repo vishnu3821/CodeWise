@@ -19,8 +19,8 @@ const ContentManagerDashboard = () => {
             startLoading();
             try {
                 const token = localStorage.getItem('token');
-                const activityRes = await axios.get('http://localhost:5001/api/dashboard/cm/recent-activity', {
-                    headers: { 'x-auth-token': token }
+                const activityRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard/cm/recent-activity`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setRecentActivity(activityRes.data);
             } catch (error) {

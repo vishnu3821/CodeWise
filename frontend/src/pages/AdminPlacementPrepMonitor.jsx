@@ -48,8 +48,8 @@ const AdminPlacementPrepMonitor = ({ companyId }) => {
         try {
             startLoading();
             const [statsRes, companiesRes] = await Promise.all([
-                axios.get('http://localhost:5001/api/placement-prep/admin/overview', getAuthHeader()),
-                axios.get('http://localhost:5001/api/placement-prep/admin/companies', getAuthHeader())
+                axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/admin/overview`, getAuthHeader()),
+                axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/admin/companies`, getAuthHeader())
             ]);
             setStats(statsRes.data);
             setCompanies(companiesRes.data);
@@ -64,7 +64,7 @@ const AdminPlacementPrepMonitor = ({ companyId }) => {
     const fetchGlobalActivity = async () => {
         try {
             startLoading();
-            const response = await axios.get(`http://localhost:5001/api/placement-prep/admin/activity?filter=${activityFilter}`, getAuthHeader());
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/admin/activity?filter=${activityFilter}`, getAuthHeader());
             setGlobalActivities(response.data);
         } catch (error) {
             console.error('Failed to fetch global activities:', error);
@@ -77,8 +77,8 @@ const AdminPlacementPrepMonitor = ({ companyId }) => {
         try {
             startLoading();
             const [compRes, qsRes] = await Promise.all([
-                axios.get(`http://localhost:5001/api/placement-prep/companies/${companyId}`, getAuthHeader()), // Uses the existing public-ish route
-                axios.get(`http://localhost:5001/api/placement-prep/admin/companies/${companyId}/questions`, getAuthHeader())
+                axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${companyId}`, getAuthHeader()), // Uses the existing public-ish route
+                axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/admin/companies/${companyId}/questions`, getAuthHeader())
             ]);
             setCompanyDetails(compRes.data);
             setQuestions(qsRes.data);
@@ -96,7 +96,7 @@ const AdminPlacementPrepMonitor = ({ companyId }) => {
         if (!window.confirm(`Are you sure you want to ${currentStatus ? 'disable' : 'enable'} this question?`)) return;
         try {
             startLoading();
-            await axios.patch(`http://localhost:5001/api/placement-prep/admin/questions/${questionId}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL}/api/placement-prep/admin/questions/${questionId}/status`,
                 { is_active: !currentStatus },
                 getAuthHeader()
             );
@@ -114,7 +114,7 @@ const AdminPlacementPrepMonitor = ({ companyId }) => {
         if (!window.confirm('Are you absolutely sure you want to delete this question? This action cannot be undone.')) return;
         try {
             startLoading();
-            await axios.delete(`http://localhost:5001/api/placement-prep/questions/${questionId}`, getAuthHeader());
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/placement-prep/questions/${questionId}`, getAuthHeader());
             toast.success('Question deleted successfully');
             fetchCompanyDetails(); // Refresh
         } catch (error) {

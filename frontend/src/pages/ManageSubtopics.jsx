@@ -28,7 +28,7 @@ const ManageSubtopics = () => {
     const fetchSubtopics = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`http://localhost:5001/api/content/topics/${topicId}/subtopics`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/topics/${topicId}/subtopics`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setSubtopics(res.data);
@@ -67,11 +67,11 @@ const ManageSubtopics = () => {
         const token = localStorage.getItem('token');
         try {
             if (modalMode === 'add') {
-                await axios.post('http://localhost:5001/api/content/subtopics', { ...formData, topic_id: topicId }, {
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/subtopics`, { ...formData, topic_id: topicId }, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } else {
-                await axios.put(`http://localhost:5001/api/content/subtopics/${currentSubtopic.id}`, formData, {
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/subtopics/${currentSubtopic.id}`, formData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }
@@ -85,7 +85,7 @@ const ManageSubtopics = () => {
     const toggleStatus = async (id, currentStatus) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.patch(`http://localhost:5001/api/content/subtopics/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/subtopics/${id}/status`,
                 { is_active: !currentStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

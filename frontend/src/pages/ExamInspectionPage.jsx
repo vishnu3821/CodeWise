@@ -24,8 +24,8 @@ const ExamInspectionPage = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`http://localhost:5001/api/training-exams/${examId}/inspection`, {
-                headers: { 'x-auth-token': token }
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/${examId}/inspection`, {
+                headers: { 'Authorization': `Bearer ${token}` }
             });
             setStats(response.data);
             setLoading(false);
@@ -74,7 +74,7 @@ const ExamInspectionPage = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            await axios.delete(`http://localhost:5001/api/training-exams/admin/${examId}/reset-attempt/${userId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL}/api/training-exams/admin/${examId}/reset-attempt/${userId}`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             alert('Re-attempt granted successfully.');

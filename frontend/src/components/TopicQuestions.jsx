@@ -21,7 +21,7 @@ const TopicQuestions = () => {
 
                 // If subtopicId is present, fetch questions for that subtopic directly
                 if (subtopicId) {
-                    const questionsRes = await axios.get(`http://localhost:5001/api/subtopics/${subtopicId}/questions`, config);
+                    const questionsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/subtopics/${subtopicId}/questions`, config);
                     setTopicName(questionsRes.data.topic || 'Practice');
                     setQuestions(questionsRes.data.questions);
                     setSubtopics([]);
@@ -29,7 +29,7 @@ const TopicQuestions = () => {
                     // Existing logic for main topic view
                     let subtopicsRes = null;
                     try {
-                        subtopicsRes = await axios.get(`http://localhost:5001/api/topics/${topicSlug}/subtopics?language=${slug}`, config);
+                        subtopicsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/topics/${topicSlug}/subtopics?language=${slug}`, config);
                     } catch (e) {
                         // Ignore
                     }
@@ -37,7 +37,7 @@ const TopicQuestions = () => {
                     if (subtopicsRes && subtopicsRes.data.subtopics && subtopicsRes.data.subtopics.length > 0) {
                         if (subtopicsRes.data.subtopics.length === 1) {
                             const singleSubtopic = subtopicsRes.data.subtopics[0];
-                            const questionsRes = await axios.get(`http://localhost:5001/api/subtopics/${singleSubtopic.id}/questions`, config);
+                            const questionsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/subtopics/${singleSubtopic.id}/questions`, config);
                             setTopicName(subtopicsRes.data.topic);
                             setQuestions(questionsRes.data.questions);
                             setSubtopics([]);
@@ -46,7 +46,7 @@ const TopicQuestions = () => {
                             setSubtopics(subtopicsRes.data.subtopics);
                         }
                     } else {
-                        const questionsRes = await axios.get(`http://localhost:5001/api/topics/${topicSlug}/questions?language=${slug}`, config);
+                        const questionsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/topics/${topicSlug}/questions?language=${slug}`, config);
                         setTopicName(questionsRes.data.topic);
                         setQuestions(questionsRes.data.questions);
                     }
@@ -59,7 +59,7 @@ const TopicQuestions = () => {
                     const userStr = localStorage.getItem('user');
                     if (userStr) {
                         const user = JSON.parse(userStr);
-                        const completedRes = await axios.get(`http://localhost:5001/api/users/${user.id}/completed-questions`, config);
+                        const completedRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/users/${user.id}/completed-questions`, config);
                         setCompletedQuestions(new Set(completedRes.data));
                     }
                 }

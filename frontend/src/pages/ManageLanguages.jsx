@@ -31,7 +31,7 @@ const ManageLanguages = () => {
     const fetchLanguages = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get('http://localhost:5001/api/content/languages', {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLanguages(res.data);
@@ -76,11 +76,11 @@ const ManageLanguages = () => {
         const token = localStorage.getItem('token');
         try {
             if (modalMode === 'add') {
-                await axios.post('http://localhost:5001/api/content/languages', formData, {
+                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/languages`, formData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } else {
-                await axios.put(`http://localhost:5001/api/content/languages/${currentLang.id}`, formData, {
+                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/languages/${currentLang.id}`, formData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }
@@ -94,7 +94,7 @@ const ManageLanguages = () => {
     const toggleStatus = async (id, currentStatus) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.patch(`http://localhost:5001/api/content/languages/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/languages/${id}/status`,
                 { is_active: !currentStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

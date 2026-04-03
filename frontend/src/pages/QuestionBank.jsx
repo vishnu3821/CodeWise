@@ -42,19 +42,19 @@ const QuestionBank = () => {
 
     const fetchLanguages = async () => {
         const token = localStorage.getItem('token');
-        const res = await axios.get('http://localhost:5001/api/content/languages', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, { headers: { Authorization: `Bearer ${token}` } });
         setLanguages(res.data);
     };
 
     const fetchTopics = async (langId) => {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:5001/api/content/languages/${langId}/topics`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages/${langId}/topics`, { headers: { Authorization: `Bearer ${token}` } });
         setTopics(res.data);
     };
 
     const fetchSubtopics = async (topicId) => {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`http://localhost:5001/api/content/topics/${topicId}/subtopics`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/topics/${topicId}/subtopics`, { headers: { Authorization: `Bearer ${token}` } });
         setSubtopics(res.data);
     };
 
@@ -68,7 +68,7 @@ const QuestionBank = () => {
             if (filters.subtopic_id) params.append('subtopic_id', filters.subtopic_id);
             if (filters.status) params.append('status', filters.status);
 
-            const res = await axios.get(`http://localhost:5001/api/content/questions?${params.toString()}`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/questions?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuestions(res.data);

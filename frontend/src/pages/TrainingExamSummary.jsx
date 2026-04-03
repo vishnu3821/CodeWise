@@ -19,7 +19,7 @@ const TrainingExamSummary = () => {
             const fetchResult = async () => {
                 try {
                     const token = localStorage.getItem('token');
-                    const res = await axios.get(`http://localhost:5001/api/training-exams/${id}/result`, {
+                    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}/result`, {
                         headers: { Authorization: `Bearer ${token}` }
                     });
                     setResult(res.data);
