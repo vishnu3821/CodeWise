@@ -40,18 +40,18 @@ const PrepQuestionsList = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            const compRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${companyId}`, {
+            const compRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${companyId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCompany(compRes.data);
 
-            const modRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${companyId}/modules`, {
+            const modRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${companyId}/modules`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const mod = modRes.data.find(m => m.id === parseInt(moduleId));
             setCurrentModuleObj(mod);
 
-            const qRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${compRes.data.id}/questions?moduleId=${moduleId}`, {
+            const qRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${compRes.data.id}/questions?moduleId=${moduleId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setQuestions(qRes.data);
@@ -149,12 +149,12 @@ const PrepQuestionsList = () => {
             };
 
             if (modalMode === 'add') {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${company.id}/questions`, payload, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${company.id}/questions`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 toast.success('Question added successfully');
             } else {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/placement-prep/questions/${currentQuestion.id}`, payload, {
+                await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/questions/${currentQuestion.id}`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 toast.success('Question updated successfully');
@@ -175,7 +175,7 @@ const PrepQuestionsList = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/placement-prep/questions/${id}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/questions/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast.success('Question deleted successfully');

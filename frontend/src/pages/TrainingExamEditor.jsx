@@ -72,7 +72,7 @@ const TrainingExamEditor = () => {
     const fetchMetadata = async () => {
         try {
             const token = localStorage.getItem('token');
-            const langRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, {
+            const langRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLanguages(langRes.data);
@@ -84,7 +84,7 @@ const TrainingExamEditor = () => {
     const fetchExamDetails = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const exam = response.data;
@@ -115,13 +115,13 @@ const TrainingExamEditor = () => {
             const payload = { ...formData, type: 'TRAINING' };
 
             if (isEditMode) {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}`, payload, {
+                await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setMessage({ type: 'success', text: 'Exam details updated.' });
                 setCurrentStep(2); // Auto-advance
             } else {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/content/exams`, payload, {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/exams`, payload, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 // Navigate and pass state to set step to 2 automatically
@@ -178,7 +178,7 @@ const TrainingExamEditor = () => {
                 if (lang) params.language = lang.slug;
             }
 
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/questions`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/questions`, {
                 params,
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -223,12 +223,12 @@ const TrainingExamEditor = () => {
                 status: 'published'
             };
 
-            const createRes = await axios.post(`${process.env.REACT_APP_API_URL}/api/content/questions`, qPayload, {
+            const createRes = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/questions`, qPayload, {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
             // 2. Link to Exam with Module
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}/questions`, {
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}/questions`, {
                 question_id: createRes.data.id,
                 marks: newQuestion.marks,
                 module: activeModule // 'english' or 'maths'
@@ -261,7 +261,7 @@ const TrainingExamEditor = () => {
             setIsAdding(true);
             const token = localStorage.getItem('token');
             for (let qId of stagedQuestions) {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}/questions`, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}/questions`, {
                     question_id: qId,
                     marks: 10,
                     module: 'coding'
@@ -284,7 +284,7 @@ const TrainingExamEditor = () => {
         if (!id) return alert("Exam ID missing. Please save details first.");
         try {
             const token = localStorage.getItem('token');
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}/questions`, {
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}/questions`, {
                 question_id: qId,
                 marks: 10, // Default or from question?
                 module: 'coding'
@@ -302,7 +302,7 @@ const TrainingExamEditor = () => {
         if (!window.confirm('Remove from exam?')) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}/questions/${qId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}/questions/${qId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchExamDetails();
@@ -315,7 +315,7 @@ const TrainingExamEditor = () => {
         if (!window.confirm('Submit for Admin Review?')) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/exams/${id}/status`, { status: 'pending_review' }, {
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${id}/status`, { status: 'pending_review' }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setFormData(prev => ({ ...prev, status: 'pending_review' }));

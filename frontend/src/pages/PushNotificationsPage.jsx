@@ -26,7 +26,7 @@ const PushNotificationsPage = () => {
             setIsSending(true);
             startLoading();
             const token = localStorage.getItem('token');
-            const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/notifications/admin/push`,
+            const res = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/notifications/admin/push`,
                 { title, message, target_role: targetRole },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

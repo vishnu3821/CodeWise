@@ -17,7 +17,7 @@ const RecentlySolved = () => {
         try {
             const user = JSON.parse(localStorage.getItem('user'));
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard/recently-solved`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/dashboard/recently-solved`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setProblems(response.data);

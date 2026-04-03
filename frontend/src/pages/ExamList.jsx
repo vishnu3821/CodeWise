@@ -28,7 +28,7 @@ const ExamList = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/exams`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/exams`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setExams(response.data);
@@ -44,7 +44,7 @@ const ExamList = () => {
     const fetchLanguages = async () => {
         try {
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setLanguages(response.data);
@@ -68,7 +68,7 @@ const ExamList = () => {
         if (!window.confirm('Are you sure you want to submit this exam for review? It will be visible to Admins.')) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/exams/${examId}/status`, {
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/content/exams/${examId}/status`, {
                 status: 'pending_review'
             }, {
                 headers: { Authorization: `Bearer ${token}` }

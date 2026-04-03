@@ -12,7 +12,7 @@ const Profile = () => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/progress/profile`, {
+                    const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/user/progress/profile`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
                     setProfile(res.data);

@@ -102,7 +102,7 @@ const QuestionDetail = () => {
         const fetchQuestionAndDraft = async () => {
             try {
                 // Fetch Question
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/questions/${questionId}`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/questions/${questionId}`);
                 setQuestion(response.data);
                 // Check if explanation exists in response, otherwise set null
                 setExplanation(response.data.explanation || null);
@@ -118,7 +118,7 @@ const QuestionDetail = () => {
                     const user = userStr ? JSON.parse(userStr) : null;
                     if (user) {
                         try {
-                            const draftRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/questions/${questionId}/draft`, {
+                            const draftRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/questions/${questionId}/draft`, {
                                 params: { userId: user.id, language: slug || 'c' }
                             });
 
@@ -179,7 +179,7 @@ const QuestionDetail = () => {
 
             if (user && code) {
                 try {
-                    await axios.post(`${process.env.REACT_APP_API_URL}/api/questions/${questionId}/draft`, {
+                    await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/questions/${questionId}/draft`, {
                         userId: user.id,
                         language: slug || 'c',
                         code: code
@@ -209,7 +209,7 @@ const QuestionDetail = () => {
                 const userStr = localStorage.getItem('user');
                 const user = userStr ? JSON.parse(userStr) : null;
                 if (user) {
-                    await axios.post(`${process.env.REACT_APP_API_URL}/api/questions/${questionId}/draft`, {
+                    await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/questions/${questionId}/draft`, {
                         userId: user.id,
                         language: slug || 'c',
                         code: defaultCode
@@ -230,7 +230,7 @@ const QuestionDetail = () => {
         setActiveCaseIndex(0);
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/code/run-cases`, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/code/run-cases`, {
                 code,
                 question_id: questionId,
                 language: slug || 'c'
@@ -255,7 +255,7 @@ const QuestionDetail = () => {
             const userStr = localStorage.getItem('user');
             const user = userStr ? JSON.parse(userStr) : null;
 
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/code/submit`, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/code/submit`, {
                 code,
                 question_id: questionId,
                 language: slug || 'c',

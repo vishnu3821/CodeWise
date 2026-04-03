@@ -28,7 +28,7 @@ const ManageTopics = () => {
     const fetchTopics = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages/${languageId}/topics`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages/${languageId}/topics`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setTopics(res.data);
@@ -67,11 +67,11 @@ const ManageTopics = () => {
         const token = localStorage.getItem('token');
         try {
             if (modalMode === 'add') {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/topics`, { ...formData, language_id: languageId }, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/topics`, { ...formData, language_id: languageId }, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } else {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/topics/${currentTopic.id}`, formData, {
+                await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/content/topics/${currentTopic.id}`, formData, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }
@@ -85,7 +85,7 @@ const ManageTopics = () => {
     const toggleStatus = async (id, currentStatus) => {
         const token = localStorage.getItem('token');
         try {
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/topics/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/content/topics/${id}/status`,
                 { is_active: !currentStatus },
                 { headers: { Authorization: `Bearer ${token}` } }
             );

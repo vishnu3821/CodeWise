@@ -14,7 +14,7 @@ const NotesList = () => {
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/notes/public`, {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/notes/public`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setNotes(res.data);

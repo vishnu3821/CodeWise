@@ -46,7 +46,7 @@ const QuestionEditor = () => {
 
     const fetchLanguages = async () => {
         const token = localStorage.getItem('token');
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, { headers: { Authorization: `Bearer ${token}` } });
+        const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages`, { headers: { Authorization: `Bearer ${token}` } });
         setLanguages(res.data.filter(l => l.has_practice));
     };
 
@@ -54,7 +54,7 @@ const QuestionEditor = () => {
     useEffect(() => {
         if (formData.language_id) {
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages/${formData.language_id}/topics`, { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages/${formData.language_id}/topics`, { headers: { Authorization: `Bearer ${token}` } })
                 .then(res => setTopics(res.data));
         }
     }, [formData.language_id]);
@@ -62,7 +62,7 @@ const QuestionEditor = () => {
     useEffect(() => {
         if (formData.topic_id) {
             const token = localStorage.getItem('token');
-            axios.get(`${process.env.REACT_APP_API_URL}/api/content/topics/${formData.topic_id}/subtopics`, { headers: { Authorization: `Bearer ${token}` } })
+            axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/topics/${formData.topic_id}/subtopics`, { headers: { Authorization: `Bearer ${token}` } })
                 .then(res => setSubtopics(res.data));
         }
     }, [formData.topic_id]);
@@ -70,7 +70,7 @@ const QuestionEditor = () => {
     const fetchQuestionData = async () => {
         try {
             const token = localStorage.getItem('token');
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/questions/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/questions/${id}`, { headers: { Authorization: `Bearer ${token}` } });
             const q = res.data;
             setFormData({
                 language_id: q.language_id,
@@ -113,9 +113,9 @@ const QuestionEditor = () => {
 
         try {
             if (isEdit) {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/content/questions/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/content/questions/${id}`, payload, { headers: { Authorization: `Bearer ${token}` } });
             } else {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/content/questions`, payload, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/questions`, payload, { headers: { Authorization: `Bearer ${token}` } });
             }
             navigate('/content-dashboard/questions');
         } catch (err) {

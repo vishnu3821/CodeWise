@@ -22,13 +22,13 @@ const CompanyDetail = () => {
                 const token = localStorage.getItem('token');
 
                 // Fetch company details
-                const compRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies/${companyId}`, {
+                const compRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies/${companyId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setCompany(compRes.data);
 
                 // Fetch modules
-                const modRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies/${companyId}/modules`, {
+                const modRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies/${companyId}/modules`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setModules(modRes.data);

@@ -159,7 +159,7 @@ const AdminDashboard = () => {
     const fetchStats = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/admin/stats`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/stats`, getAuthHeader());
             setStats(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -168,7 +168,7 @@ const AdminDashboard = () => {
     const fetchContentManagers = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/admin/users`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/users`, getAuthHeader());
             setContentManagers(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -177,7 +177,7 @@ const AdminDashboard = () => {
     const fetchQueue = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/admin/review-queue`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/review-queue`, getAuthHeader());
             setReviewQueue(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -186,7 +186,7 @@ const AdminDashboard = () => {
     const fetchUsers = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/users`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/users`, getAuthHeader());
             console.log('Fetched Users:', res.data); // Debug logging
             setUsers(res.data);
         } catch (err) { console.error(err); }
@@ -196,7 +196,7 @@ const AdminDashboard = () => {
     const fetchLogs = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/admin/audit-logs`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/audit-logs`, getAuthHeader());
             setAuditLogs(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -208,7 +208,7 @@ const AdminDashboard = () => {
     const fetchAdminExams = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/admin/list`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/admin/list`, getAuthHeader());
             setAdminExams(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -222,7 +222,7 @@ const AdminDashboard = () => {
         if (!window.confirm('Are you sure you want to archive this exam? It will no longer be visible to students, but you can still inspect past results.')) return;
         try {
             startLoading();
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/training-exams/admin/${id}`, getAuthHeader());
+            await axios.delete(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/admin/${id}`, getAuthHeader());
             // Update the state to mark as archived instead of removing
             setAdminExams(adminExams.map(exam => exam.id === id ? { ...exam, status: 'archived' } : exam));
             alert('Exam archived successfully');
@@ -237,7 +237,7 @@ const AdminDashboard = () => {
     const fetchLanguages = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages`, getAuthHeader());
             setLanguages(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -247,20 +247,20 @@ const AdminDashboard = () => {
         try {
             startLoading();
             // Fetch Disabled Questions (status=inactive or disabled)
-            const resQ = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/questions?status=disabled`, getAuthHeader());
+            const resQ = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/questions?status=disabled`, getAuthHeader());
             // Fallback for older data that might use is_active=0 but status!=disabled (if any)
             // But getQuestions handles status param.
 
             // Fetch All Notes and filter
-            const resN = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/notes`, getAuthHeader());
+            const resN = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/notes`, getAuthHeader());
             const disabledNotes = resN.data.filter(n => n.status === 'disabled' || n.is_active === 0 || n.is_active === false);
 
             // Fetch All Languages and filter
-            const resL = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/languages`, getAuthHeader());
+            const resL = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/languages`, getAuthHeader());
             const disabledLangs = resL.data.filter(l => l.is_active === 0 || l.is_active === false);
 
             // Fetch All Exams and filter
-            const resE = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/exams?status=disabled`, getAuthHeader());
+            const resE = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/exams?status=disabled`, getAuthHeader());
 
             setDisabledItems({
                 questions: resQ.data,
@@ -285,9 +285,9 @@ const AdminDashboard = () => {
             // adminController toggleLanguageStatus is at /admin/languages/:id/status
 
             if (type === 'languages') {
-                url = `${process.env.REACT_APP_API_URL}/api/content/admin/languages/${id}/status`;
+                url = `${process.env.REACT_APP_API_URL || ""}/api/content/admin/languages/${id}/status`;
             } else {
-                url = `${process.env.REACT_APP_API_URL}/api/content/admin/content/${type}/${id}/status`;
+                url = `${process.env.REACT_APP_API_URL || ""}/api/content/admin/content/${type}/${id}/status`;
             }
 
             await axios.patch(url, { is_active: true }, getAuthHeader());
@@ -306,7 +306,7 @@ const AdminDashboard = () => {
     const handleOpenReview = async (type, id) => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/admin/item/${type}/${id}`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/item/${type}/${id}`, getAuthHeader());
             setSelectedItem({ ...res.data, type }); // Ensure type is present
 
             // Reset password state for new review
@@ -333,7 +333,7 @@ const AdminDashboard = () => {
         }
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${selectedItem.id}/set-password`,
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${selectedItem.id}/set-password`,
                 { password: examPassword }, getAuthHeader());
             setPasswordSetSuccess(true);
             setIsPasswordModalOpen(false);
@@ -349,7 +349,7 @@ const AdminDashboard = () => {
             return;
         }
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${selectedItem.id}/pre-exam-message`, preExamMessage, getAuthHeader());
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${selectedItem.id}/pre-exam-message`, preExamMessage, getAuthHeader());
             alert('Pre-exam message saved successfully.');
             setIsMessageModalOpen(false);
 
@@ -376,7 +376,7 @@ const AdminDashboard = () => {
                 return;
             }
             try {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${selectedItem.id}/publish`, {}, getAuthHeader());
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${selectedItem.id}/publish`, {}, getAuthHeader());
                 alert(`Exam published successfully`);
                 setIsModalOpen(false);
                 fetchQueue();
@@ -392,7 +392,7 @@ const AdminDashboard = () => {
         if (action === 'reject' && !comment) return;
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/content/admin/review/${selectedItem.type}/${selectedItem.id}`,
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/review/${selectedItem.type}/${selectedItem.id}`,
                 { action, comment }, getAuthHeader()
             );
             alert(`Item ${action}ed successfully`);
@@ -407,7 +407,7 @@ const AdminDashboard = () => {
     const handleToggleUser = async (id, currentStatus) => {
         if (!window.confirm(`Are you sure you want to ${currentStatus ? 'deactivate' : 'activate'} this user?`)) return;
         try {
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/admin/users/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/users/${id}/status`,
                 { is_active: !currentStatus }, getAuthHeader()
             );
             fetchUsers();
@@ -420,7 +420,7 @@ const AdminDashboard = () => {
         if (!window.confirm(`Are you sure you want to ${currentStatus ? 'disable' : 'enable'} this language?`)) return;
         try {
             // Using Admin route for Audit Log
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/content/admin/languages/${id}/status`,
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/languages/${id}/status`,
                 { is_active: !currentStatus }, getAuthHeader()
             );
             fetchLanguages();
@@ -432,7 +432,7 @@ const AdminDashboard = () => {
     const handleDeleteUser = async (id) => {
         if (!window.confirm('Are you sure you want to PERMANENTLY delete this user? This cannot be undone.')) return;
         try {
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/content/admin/users/${id}`, getAuthHeader());
+            await axios.delete(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/users/${id}`, getAuthHeader());
             setUsers(users.filter(user => user.id !== id));
             alert('User deleted successfully');
             if (selectedItem && selectedItem.id === id) setIsModalOpen(false);
@@ -451,7 +451,7 @@ const AdminDashboard = () => {
     const fetchIssues = async () => {
         try {
             startLoading();
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/issues`, getAuthHeader());
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/issues`, getAuthHeader());
             setReportedIssues(res.data);
         } catch (err) { console.error(err); }
         finally { stopLoading(); }
@@ -460,7 +460,7 @@ const AdminDashboard = () => {
     const handleUpdateIssueStatus = async (id, status) => {
         if (!window.confirm(`Mark this issue as ${status}?`)) return;
         try {
-            await axios.patch(`${process.env.REACT_APP_API_URL}/api/issues/${id}/status`, { status }, getAuthHeader());
+            await axios.patch(`${process.env.REACT_APP_API_URL || ""}/api/issues/${id}/status`, { status }, getAuthHeader());
             // Update local state
             setReportedIssues(prev => prev.map(issue => issue.id === id ? { ...issue, status } : issue));
 
@@ -476,7 +476,7 @@ const AdminDashboard = () => {
 
     const handleAddUser = async () => {
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/content/admin/users`, newUser, getAuthHeader());
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/content/admin/users`, newUser, getAuthHeader());
             alert('Content Manager created successfully');
             setIsAddUserModalOpen(false);
             setNewUser({ name: '', email: '', password: '' });
@@ -952,7 +952,7 @@ const AdminDashboard = () => {
                                 }}>
                                     {selectedItem.profile_picture ? (
                                         <img
-                                            src={selectedItem.profile_picture.startsWith('http') ? selectedItem.profile_picture : `${process.env.REACT_APP_API_URL}${selectedItem.profile_picture}`}
+                                            src={selectedItem.profile_picture.startsWith('http') ? selectedItem.profile_picture : `${process.env.REACT_APP_API_URL || ""}${selectedItem.profile_picture}`}
                                             alt={selectedItem.name}
                                             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                             onError={(e) => {
@@ -1237,9 +1237,9 @@ const AdminDashboard = () => {
                             {/* Left: Content */}
                             <div>
                                 <h4 style={{ marginBottom: '0.5rem', color: '#64748B' }}>Screenshot</h4>
-                                <div style={{ marginBottom: '1.5rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #E2E8F0', cursor: 'zoom-in' }} onClick={() => window.open(`${process.env.REACT_APP_API_URL}${selectedIssue.screenshot_url}`, '_blank')}>
+                                <div style={{ marginBottom: '1.5rem', borderRadius: '8px', overflow: 'hidden', border: '1px solid #E2E8F0', cursor: 'zoom-in' }} onClick={() => window.open(`${process.env.REACT_APP_API_URL || ""}${selectedIssue.screenshot_url}`, '_blank')}>
                                     <img
-                                        src={`${process.env.REACT_APP_API_URL}${selectedIssue.screenshot_url}`}
+                                        src={`${process.env.REACT_APP_API_URL || ""}${selectedIssue.screenshot_url}`}
                                         alt="Issue Screenshot"
                                         style={{ width: '100%', display: 'block' }}
                                     />
@@ -1449,11 +1449,11 @@ const AdminDashboard = () => {
                         {selectedItem.type === 'notes' && (
                             <div style={{ marginBottom: '1.5rem' }}>
                                 <h4>Full Note Preview</h4>
-                                <a href={`${process.env.REACT_APP_API_URL}${selectedItem.file_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3B82F6', textDecoration: 'underline' }}>
+                                <a href={`${process.env.REACT_APP_API_URL || ""}${selectedItem.file_url}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3B82F6', textDecoration: 'underline' }}>
                                     Open PDF in new tab
                                 </a>
                                 <iframe
-                                    src={`${process.env.REACT_APP_API_URL}${selectedItem.file_url}`}
+                                    src={`${process.env.REACT_APP_API_URL || ""}${selectedItem.file_url}`}
                                     width="100%"
                                     height="400px"
                                     style={{ marginTop: '10px', border: '1px solid #E2E8F0', borderRadius: '6px' }}

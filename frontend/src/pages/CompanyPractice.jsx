@@ -17,7 +17,7 @@ const CompanyPractice = () => {
             try {
                 startLoading();
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setCompanies(response.data);
@@ -44,7 +44,7 @@ const CompanyPractice = () => {
                         <div className="cp-card-header">
                             {company.logo_path ? (
                                 <div className="company-logo-wrapper">
-                                    <img src={`${process.env.REACT_APP_API_URL}/uploads/companies/${company.logo_path}`} alt={`${company.name} logo`} />
+                                    <img src={`${process.env.REACT_APP_API_URL || ""}/uploads/companies/${company.logo_path}`} alt={`${company.name} logo`} />
                                 </div>
                             ) : (
                                 <div className="company-logo-wrapper">

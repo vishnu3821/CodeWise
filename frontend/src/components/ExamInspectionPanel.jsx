@@ -20,7 +20,7 @@ const ExamInspectionPanel = ({ examId, onClose }) => {
         try {
             setLoading(true);
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/${examId}/inspection`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${examId}/inspection`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setStats(response.data);

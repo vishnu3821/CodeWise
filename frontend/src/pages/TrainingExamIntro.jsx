@@ -26,7 +26,7 @@ const TrainingExamIntro = () => {
                 if (!token) { navigate('/login'); return; }
 
                 // Try to fetch exam. If 403, it might be password protected.
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}`, {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${id}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
 
@@ -69,7 +69,7 @@ const TrainingExamIntro = () => {
 
                 try {
                     const token = localStorage.getItem('token');
-                    const res = await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}/verify-password`,
+                    const res = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${id}/verify-password`,
                         { password },
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
@@ -104,7 +104,7 @@ const TrainingExamIntro = () => {
         if (instructionData) {
             try {
                 const token = localStorage.getItem('token');
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/training-exams/${id}/accept-message`, {}, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/training-exams/${id}/accept-message`, {}, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } catch (err) {

@@ -47,11 +47,11 @@ const DashboardOverview = () => {
                     const authHeader = { headers: { 'Authorization': `Bearer ${token}` } };
 
                     // 1. Fetch Stats
-                    const statsRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/user/progress/profile`, authHeader);
+                    const statsRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/user/progress/profile`, authHeader);
                     setStats(statsRes.data.stats);
 
                     // 2. Fetch Recent
-                    const recentRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/dashboard/recently-solved`, authHeader);
+                    const recentRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/dashboard/recently-solved`, authHeader);
                     setRecentProblems(recentRes.data.slice(0, 3)); // Limit to 3 items
 
                 } catch (err) {

@@ -14,7 +14,7 @@ const LanguageTopics = () => {
         const fetchTopics = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/languages/${slug}/topics`, {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/languages/${slug}/topics`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setLanguageName(response.data.language);

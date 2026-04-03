@@ -13,7 +13,7 @@ const NotificationBell = () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) return;
-            const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/notifications`, {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/notifications`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(res.data);
@@ -48,7 +48,7 @@ const NotificationBell = () => {
         e.stopPropagation(); // prevent closing if clicking specific action
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`${process.env.REACT_APP_API_URL}/api/notifications/${id}/read`, {}, {
+            await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/notifications/${id}/read`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // instantly update locally
@@ -64,7 +64,7 @@ const NotificationBell = () => {
         if (unreadCount === 0) return;
         try {
             const token = localStorage.getItem('token');
-            await axios.put(`${process.env.REACT_APP_API_URL}/api/notifications/read-all`, {}, {
+            await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/notifications/read-all`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));

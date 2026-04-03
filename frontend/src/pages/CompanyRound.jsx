@@ -23,19 +23,19 @@ const CompanyRound = () => {
                 const token = localStorage.getItem('token');
 
                 // Fetch basic info for layout headers
-                const compRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies/${companyId}`, {
+                const compRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies/${companyId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setCompanyDetails(compRes.data);
 
-                const modRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies/${companyId}/modules`, {
+                const modRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies/${companyId}/modules`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 const matchedModule = modRes.data.find(m => m.id === parseInt(roundId));
                 setModuleDetails(matchedModule);
 
                 // Fetch exactly the active questions for this module
-                const qRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/public/companies/${companyId}/questions?moduleId=${roundId}`, {
+                const qRes = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/public/companies/${companyId}/questions?moduleId=${roundId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setQuestions(qRes.data);

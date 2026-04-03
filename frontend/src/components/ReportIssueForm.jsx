@@ -45,7 +45,7 @@ const ReportIssueForm = ({ onCancel, onSuccess }) => {
             formData.append('page_url', window.location.href);
 
             const token = localStorage.getItem('token');
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/issues`, formData, {
+            await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/issues`, formData, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'multipart/form-data'

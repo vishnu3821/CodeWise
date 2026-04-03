@@ -18,7 +18,7 @@ const TrainingExamList = () => {
                 if (!token) { navigate('/login'); return; }
 
                 console.log("Fetching exams...");
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/training-exams`, {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/training-exams`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 console.log("Exams received:", res.data);

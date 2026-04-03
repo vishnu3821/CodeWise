@@ -61,7 +61,7 @@ const AIAssistant = () => {
         }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/ai/chat`, {
+            const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/ai/chat`, {
                 message: userMsg.text,
                 language: currentLanguage,
                 topic: currentTopic,

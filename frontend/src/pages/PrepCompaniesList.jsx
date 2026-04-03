@@ -28,7 +28,7 @@ const PrepCompaniesList = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setCompanies(response.data);
@@ -57,7 +57,7 @@ const PrepCompaniesList = () => {
     const openEditModal = (company) => {
         setModalMode('edit');
         setCurrentCompany(company);
-        const previewUrl = company.logo_path ? `${process.env.REACT_APP_API_URL}/uploads/companies/${company.logo_path}` : null;
+        const previewUrl = company.logo_path ? `${process.env.REACT_APP_API_URL || ""}/uploads/companies/${company.logo_path}` : null;
         setFormData({ name: company.name, description: company.description || '', logo_file: null, logo_preview: previewUrl, remove_logo: 'false' });
         setIsModalOpen(true);
     };
@@ -108,12 +108,12 @@ const PrepCompaniesList = () => {
             }
 
             if (modalMode === 'add') {
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies`, data, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies`, data, {
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 toast.success('Company added successfully');
             } else {
-                await axios.put(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${currentCompany.id}`, data, {
+                await axios.put(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${currentCompany.id}`, data, {
                     headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 toast.success('Company updated successfully');
@@ -135,7 +135,7 @@ const PrepCompaniesList = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            await axios.delete(`${process.env.REACT_APP_API_URL}/api/placement-prep/companies/${companyId}`, {
+            await axios.delete(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/companies/${companyId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             toast.success('Company deleted successfully');

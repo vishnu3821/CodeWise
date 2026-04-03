@@ -21,7 +21,7 @@ const PlacementPrepActivity = () => {
         try {
             startLoading();
             const token = localStorage.getItem('token');
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/placement-prep/activity?filter=${filter}`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/placement-prep/activity?filter=${filter}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setActivities(response.data);

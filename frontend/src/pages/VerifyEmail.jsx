@@ -19,7 +19,7 @@ const VerifyEmail = () => {
 
         const verifyToken = async () => {
             try {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/verify-email`, { token });
+                const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/auth/verify-email`, { token });
                 setStatus('success');
                 setMessage(response.data.message);
 

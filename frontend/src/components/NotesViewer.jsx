@@ -29,7 +29,7 @@ const NotesViewer = () => {
                 const token = localStorage.getItem('token');
                 if (!token) return; // Auth handled by protected route, but safety check
 
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/api/content/notes/public/${noteId}`, {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL || ""}/api/content/notes/public/${noteId}`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setSelectedNote(res.data);
@@ -68,7 +68,7 @@ const NotesViewer = () => {
     }
 
     // Construct full file URL (it comes as /uploads/notes/...)
-    const fileUrl = `${process.env.REACT_APP_API_URL}${selectedNote.file_url}`;
+    const fileUrl = `${process.env.REACT_APP_API_URL || ""}${selectedNote.file_url}`;
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);

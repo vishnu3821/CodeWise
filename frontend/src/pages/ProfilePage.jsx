@@ -80,7 +80,7 @@ const ProfilePage = () => {
                     throw new Error('Password must be at least 8 characters');
                 }
 
-                await axios.post(`${process.env.REACT_APP_API_URL}/api/users/change-password`, {
+                await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/users/change-password`, {
                     currentPassword,
                     newPassword
                 }, config);
@@ -102,7 +102,7 @@ const ProfilePage = () => {
                     formData.append('profilePicture', file);
                 }
 
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/users/update-profile`, formData, {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL || ""}/api/users/update-profile`, formData, {
                     headers: { ...config.headers, 'Content-Type': 'multipart/form-data' }
                 });
 
