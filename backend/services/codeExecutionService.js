@@ -1,10 +1,11 @@
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { exec, spawn } = require('child_process');
 const { v4: uuidv4 } = require('uuid');
 const sqlite3 = require('sqlite3').verbose();
 
-const TEMP_DIR = path.join(__dirname, '../temp');
+const TEMP_DIR = path.join(os.tmpdir(), 'codewise_temp');
 
 // Ensure temp directory exists
 if (!fs.existsSync(TEMP_DIR)) {
