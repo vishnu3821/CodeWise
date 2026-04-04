@@ -7,9 +7,10 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 // Ensure upload directory exists
-const uploadDir = path.join(__dirname, '../uploads/companies');
+const uploadDir = path.join(os.tmpdir(), 'codewise_companies');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }

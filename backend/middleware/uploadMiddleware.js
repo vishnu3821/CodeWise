@@ -1,9 +1,10 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 
 // Ensure upload directory exists
-const uploadDir = path.join(__dirname, '../uploads/profiles');
+const uploadDir = path.join(os.tmpdir(), 'codewise_profiles');
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
